@@ -15,6 +15,7 @@ font-family:'Hind Vadodara','Noto Sans Gujarati',sans-serif;color:var(--ink);bac
 #gkmcq .hero p{margin:6px 0 0;opacity:.95;font-size:15px}
 #gkmcq .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 #gkmcq .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:3px 10px;border-radius:20px;font-size:13px}
+#gkmcq .vis{display:inline-block;margin-top:12px;background:rgba(0,0,0,.22);border-radius:20px;padding:5px 16px;font-size:15px}#gkmcq .vis b{font-size:18px;letter-spacing:.5px}
 #gkmcq .themebtn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:20px;padding:4px 10px;cursor:pointer;font:inherit;font-size:13px}
 #gkmcq .wrap{padding:14px 14px 0}
 #gkmcq .tabs{display:flex;gap:8px;margin-bottom:12px}
@@ -61,6 +62,7 @@ font-family:'Hind Vadodara','Noto Sans Gujarati',sans-serif;color:var(--ink);bac
   <h1>ગુજરાત સામાન્ય જ્ઞાન – 500 MCQ</h1>
   <p>ઇતિહાસ • ભૂગોળ • સંસ્કૃતિ • સામાન્ય જ્ઞાન • વર્તમાન બનાવો (ધોરણ-10 કક્ષા)</p>
   <div class="badges"><span>✔ ગુજરાતી સમજૂતી સાથે</span><span>✔ મોક ટેસ્ટ</span><span>✔ ભરતી પરીક્ષા માટે</span></div>
+  <div class="vis" id="gkVis">👁️ મુલાકાતીઓ: <b id="gkVisN">…</b></div>
  </div>
  <div class="wrap">
   <div class="tabs"><button class="tab on" data-m="p">📘 પ્રેક્ટિસ</button><button class="tab" data-m="t">⏱️ મોક ટેસ્ટ (30 પ્રશ્ન)</button></div>
@@ -134,6 +136,17 @@ root.addEventListener('click',function(ev){var t=ev.target.closest('button');if(
 if(!SND)document.getElementById('gkSnd').textContent='🔇 અવાજ બંધ';
 if(root.classList.contains('dark'))document.getElementById('gkTheme').textContent='☀️ લાઇટ';
 render();
+/* ---- Visitor counter: Google Sheet (વેબસાઇટ વિઝિટ કાઉન્ટર) + backup ---- */
+(function(){
+ var URL="https://script.google.com/macros/s/AKfycbzq-NWMilN2-H003w-YM3MtRWFg2XIeBR0ynh68zqtlKoHac2uiY7JBilnPotXM2GAU/exec";
+ var PAGE="gujarat-gk-mcq";
+ var el=document.getElementById('gkVisN'),box=document.getElementById('gkVis'),key="vc_"+PAGE+"_"+new Date().toDateString(),first=true,shown=false;
+ try{first=!localStorage.getItem(key);}catch(e){}
+ function show(t,td){t=Number(t);if(!(t>0))return false;shown=true;el.textContent=t.toLocaleString('en-IN')+(td!=null?'  •  આજે: '+Number(td).toLocaleString('en-IN'):'');return true;}
+ function backup(){fetch("https://abacus.jasoncameron.dev/"+(first?"hit":"get")+"/ashish119055-gsrtc/"+PAGE).then(function(r){return r.json();}).then(function(j){if(!shown&&!show(j.value,null))box.style.display='none';}).catch(function(){if(!shown)box.style.display='none';});}
+ fetch(URL+"?page="+PAGE+"&n="+(first?1:0)).then(function(r){return r.text();}).then(function(txt){var d=null;try{d=JSON.parse(txt);}catch(e){}
+  if(!(d&&show(d.total,d.today)))backup();}).catch(backup).finally(function(){try{localStorage.setItem(key,"1");}catch(e){}});
+})();
 })();
 </script>
 
